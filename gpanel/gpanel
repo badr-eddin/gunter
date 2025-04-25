@@ -1,0 +1,26 @@
+#!/bin/bash
+
+
+if [ "$1" == "mkui" ]
+then
+	echo "making ui $2..."
+	uic "./assets/ui/$2.ui" -o "./include/ui/${2%.*}.hpp"
+
+elif [ "$1" == "run" ]
+then
+	cd build
+
+	if [ "$2" == "-nb" ]
+	then
+		cmake .. -DCMAKE_AUTOMOC=ON
+		make -j${nproc}
+	fi
+	if [ -f gpanel ] && [ "$?" == "0" ]
+	then
+		./gpanel
+	fi
+
+elif [ "$1" == "mkrc" ]
+then
+echo "building qt resources files ..."
+fi

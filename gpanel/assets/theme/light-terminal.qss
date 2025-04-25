@@ -1,0 +1,296 @@
+#central_widget {
+	border: 1px solid #CCCCCC;
+}
+
+/* ----------- General Styling ----------- */
+QWidget {
+  color: #2E2E2E;
+  font-family: "Ubuntu Mono";
+  font-size: 13px;
+}
+QLineEdit, QSpinBox, #settings QSpinBox {
+  background: #FFFFFF;
+  padding: 2px;
+  border: 1px solid #CCCCCC;
+  border-radius: 2px;
+  selection-background-color: #B3D7FF;
+}
+QLineEdit:focus, QSpinBox:focus, #settings QSpinBox:focus {
+  border: 1px solid #4682B4;
+}
+
+QSpinBox::down-button,
+QSpinBox::up-button {
+  margin: 4px;
+  border: none;
+}
+QCheckBox::indicator {
+  background: #FFFFFF;
+  border-radius: 2px;
+}
+QCheckBox::indicator:checked {
+  background: #6A5ACD;
+  border-radius: 2px;
+}
+QHeaderView {
+	background: #F5F5F5;
+	border: none;
+	height: 20px;
+	min-height: 28px;
+	margin-bottom: 1px;
+}
+QHeaderView::section {
+	border: none;
+	background: transparent;
+	padding: 2px 4px;
+	border-right: 1px solid #DDDDDD;
+}
+QHeaderView::section:last, QHeaderView::section:only-one {
+  border: none;
+}
+QTreeWidget::item {
+  min-height: 25px;
+  background: #F0F0F0;
+  margin-bottom: 1px;
+}
+QTreeWidget::item:hover {
+  background: #CDE6FF;
+  color: black;
+}
+QTreeWidget::item:selected {
+  background: #B3D7FF;
+  color: black;
+}
+QScrollBar:vertical {
+  border: none;
+  background: #E0E0E0;
+  width: 13px;
+  padding: 4px;
+}
+QScrollBar::handle:vertical {
+  background: #CCCCCC;
+  border-radius: 2px;
+  height: 20px;
+}
+QScrollBar::handle:vertical:hover {
+  background: #B0B0B0;
+  border-radius: 2px;
+  height: 20px;
+}
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical {
+  border: none;
+  background: transparent;
+  height: 20px;
+  width: 0px;
+}
+QPushButton, QToolButton {
+  border-radius: 2px;
+  background: #E6E6E6;
+  padding: 2px 6px;
+}
+QPushButton:hover, QToolButton::hover {
+  background: #D0D0D0;
+}
+QPushButton:pressed, QToolButton::pressed {
+  color: #000000;
+}
+QTabWidget {
+  border: none;
+}
+QTabWidget::pane {
+  border: none;
+  background: transparent;
+  margin-top: 2px;
+  border-radius: 4px;
+}
+QTabBar {
+  background: transparent;
+}
+QTabBar QToolButton {
+  background: transparent;
+  border: none;
+}
+QTabBar::tab:last {
+	border-top-right-radius: 2px;
+	border-bottom-right-radius: 2px;
+}
+QTabBar::tab:first {
+	border-top-left-radius: 2px;
+	border-bottom-left-radius: 2px;
+}
+QTabBar::tab {
+  border: none;
+  background: #E6E6E6;
+  padding: 2px 8px;
+  min-height: 25px;
+  min-width: 80px;
+}
+QTabBar::tab:hover {
+  background: #D0D0D0;
+}
+QTabBar::tab:selected {
+  background: #FFFFFF;
+  color: #333333;
+}
+QTabBar::tab:selected:hover {
+  background: #F5F5F5;
+}
+
+/* ----------- Main Window ----------- */
+#tab_navigation, #bottom_sts {
+  background: #F9F9F9;
+}
+#header {
+	background: #F0F0F0;
+}
+#body {
+  background: #FFFFFF;
+}
+#tabs_frame QTabBar::tab {
+	background: #F0F0F0;
+	border-radius: 0;
+}
+#tabs_frame QTabBar::tab:selected {
+  background: #FFFFFF;
+  color: #333333;
+}
+
+/*Window control buttons*/
+#header #window_control_buttons QPushButton {
+  border-radius: 2px;
+  background: #E6E6E6;	
+}
+#header #window_control_buttons QPushButton:hover {
+  background: #D0D0D0;
+}
+#header #window_control_buttons #restore_window {
+	border-radius: 0;
+}
+#header #window_control_buttons #minimize_window {
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+}
+#header #window_control_buttons #close_window {
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+}
+
+/* ----------- Buttons ----------- */
+#settings QPushButton, #settings QToolButton {
+  background: #E6E6E6;
+  border: none;
+  border-radius: 2px;
+  padding: 2px;
+}
+#settings QPushButton:hover, #settings QToolButton:hover {
+  background: #D0D0D0;
+}
+#settings QPushButton:pressed, #settings QToolButton:pressed {
+  color: #008000;
+}
+#use_app_password {
+  height: 25px;
+  width: 25px;
+}
+#top_left_actions QPushButton {
+  background: #E6E6E6;
+}
+#top_left_actions QPushButton:hover {
+  color: #000000;
+}
+
+/* ----------- File Explorer ----------- */
+#top_nav, #left_pane {
+  background: #F0F0F0;
+  padding: 4px;
+}
+#top_nav {
+	border-bottom: 1px solid #CCCCCC;
+}
+#left_pane {
+  border-right: 1px solid #CCCCCC;
+}
+#left_pane QLabel {
+	font-size: 16px;
+	font-weight: semi-bold;
+	padding-left: 1px;
+}
+#top_nav QLineEdit#nav_path {
+  background: transparent;
+  border: none;
+}
+#top_nav QLineEdit#nav_search_input {
+  background: #FFFFFF;
+  padding: 2px;
+  border: 1px solid #CCCCCC;
+  border-radius: 2px;
+  selection-background-color: #B3D7FF;
+}
+#actions_nav #nav_upload {
+  border-radius: 0;
+}
+#top_nav #path_nav_backward, #actions_nav #nav_new_folder {
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+#top_nav #path_nav_foreward, #actions_nav #nav_download {
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+}
+QListWidget#fm_shortcuts::item, QListWidget#fm_files_list::item {
+  min-height: 40px;
+  background: transparent;
+  margin-bottom: 2px;
+}
+QListWidget#fm_files_list {
+  padding: 4px;
+}
+QListWidget#fm_files_list::item {
+  min-width: 80px;
+  border-radius: 4px;
+  margin: 4px;
+}
+QListWidget#fm_shortcuts::item:hover, QListWidget#fm_files_list::item:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+QListWidget#fm_files_list::item:selected {
+  background: #B3D7FF;
+}
+QListWidget#fm_shortcuts QScrollBar:vertical {
+  background: transparent;
+}
+
+/*Files List*/
+QListWidget, QTreeWidget {
+	background: transparent;
+}
+
+/* ----------- Home/SYS ----------- */
+QWidget[type="scroll_widget"], QScrollArea {
+	background: transparent;
+}
+QFrame[type="elevated"] {
+	background: #FAFAFA;
+}
+#path_bar_w QPushButton {
+  background: transparent;
+  font-size: 13px;
+}
+#login_form {
+  border: 1px solid #CCCCCC;
+}
+#login_page {
+	background: #F0F0F0;
+}
+#login_msg_label {
+  color: #D32F2F;
+}
+QMdiArea {
+	background: transparent;
+}
+QMdiSubWindow {
+	border-radius: 0px;
+  border: 2px solid transparent;
+}
+

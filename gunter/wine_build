@@ -1,0 +1,37 @@
+#!/bin/bash
+
+if [ "$1" == "static" ]
+then
+echo "building static exe **********************************"
+wine g++ main.cpp $(find src -name "*.cpp") -I./include -I../common -lkernel32 -lbcrypt -ladvapi32 -lws2_32 -static  -o bin/gunters
+
+if [ "$2" == "run" ]
+then
+wine gunters.exe
+fi
+
+
+elif [ "$1" == "lib" ]
+then
+echo "building shared object **********************************"
+wine g++ dllmain.cpp -shared -o bin/gunter.dll $(find src -name "*.cpp") -I./include -I../common -lkernel32 -ladvapi32 -lws2_32
+
+
+
+elif [ "$1" == "testlib" ]
+then
+echo "building test for dll **********************************"
+
+wine g++ loadlib.cpp -lkernel32 -Lbin -lgunter -o bin/gunterwdll
+
+if [ "$2" == "run" ]
+then
+wine gunterwdll.exe
+fi
+
+
+else
+echo "building dynamic exe **********************************"
+wine g++ main.cpp $(find src -name "*.cpp") -I./include -I../common -lkernel32 -lbcrypt -ladvapi32 -lws2_32 -static -o bin/gunterd
+fi
+

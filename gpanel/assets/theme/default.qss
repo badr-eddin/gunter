@@ -1,0 +1,355 @@
+#central_widget {
+	border: 1px solid #21262D;
+}
+
+/* ----------- General Styling ----------- */
+QWidget {
+  color: rgb(173, 173, 163);
+  font-family: "Ubuntu Mono";
+  font-size: 13px;
+}
+
+QToolTip{
+    background: #13181f;
+    border: 1px solid #21262D;
+    color: rgb(173, 173, 163);
+    padding: 2px;
+    border-radius: 0px;
+}
+
+QLineEdit, QSpinBox, #settings QSpinBox{
+  background: #0d1117;
+  padding: 2px;
+  border: 1px solid #2C313C;
+  border-radius: 2px;
+  selection-background-color: #6276A4;
+}
+QLineEdit:focus, QSpinBox:focus, #settings QSpinBox:focus {
+  border: 1px solid #6276A4;
+}
+
+QSpinBox::down-button {
+  margin:  4px;
+  border: none;
+}
+QSpinBox::up-button {
+  margin: 4px;
+  border: none;
+}
+QCheckBox::indicator {
+  background: #0d1117;
+  border-radius: 2px;
+}
+QCheckBox::indicator:checked {
+  background: #bd93f9;
+  border-radius: 2px;
+}
+QHeaderView {
+	background: #191D23;
+	border: none;
+	height: 20px;
+	min-height: 28px;
+	
+  margin-bottom: 1px;
+}
+QHeaderView::section {
+	border:none;
+	background: transparent;
+	padding: 2px 4px;
+	border-right: 1px solid #1b1e22;
+}
+QHeaderView::section:last, QHeaderView::section:only-one{
+    border: none;
+}
+QTreeWidget::item {
+  min-height: 25px;
+  background: #21252B;
+  margin-bottom: 1px;
+}
+QTreeWidget::item:hover {
+  background:rgb(97, 122, 180);
+  color: black;
+}
+QTreeWidget::item:selected {
+  background: #6276A4;
+  color: black;
+}
+QScrollBar:vertical {
+  border: none;
+  background: #161B22;
+  width: 13px;
+  padding: 4px;
+}
+QScrollBar::handle:vertical {
+  background: #21262D;
+  border-radius: 2px;
+  height: 20px;
+}
+QScrollBar::handle:vertical:hover {
+  background: rgb(38, 43, 50);
+  border-radius: 2px;
+  height: 20px;
+}
+QScrollBar::add-line:vertical {
+  border: none;
+  background: transparent;
+  height: 20px;
+  width: 0px;
+}
+QScrollBar::sub-line:vertical {
+  border: none;
+  background: transparent;
+  height: 20px;
+  width: 0px;
+}
+QPushButton, QToolButton {
+  border-radius: 2px;
+  background: #21262D;
+  padding: 2px 6px;
+}
+QPushButton:hover, QToolButton::hover {
+  background: #262b32;
+}
+QPushButton:pressed, QToolButton::pressed {
+  color: #F8F8F8;
+}
+QTabWidget {
+    border: none;
+}
+QTabWidget::pane {
+    border: none;
+    background: transparent;
+    margin-top: 2px;
+    border-radius: 4px;
+}
+QTabBar {
+    background: transparent;
+}
+QTabBar QToolButton {
+    background: transparent;
+    border: none;
+}
+QTabBar::tab:last {
+	border-top-right-radius: 2px;
+	border-bottom-right-radius: 2px;
+}
+QTabBar::tab:first {
+	border-top-left-radius: 2px;
+	border-bottom-left-radius: 2px;
+}
+QTabBar::tab {
+    border: none;
+    background: #21262D;
+    padding: 2px 8px;
+    min-height: 25px;
+    min-width: 80px;
+}
+QTabBar::tab:hover {
+    background: rgb(38, 43, 50);
+}
+QTabBar::tab:selected {
+    background: #161B22;
+	color: #a5a59f;
+}
+
+QTabBar::tab:selected:hover {
+    background: #1A2027;
+}
+/* ----------- Main Window ----------- */
+#tab_navigation, #bottom_sts {
+  background: #111419;
+}
+#header {
+	background: #191D23;
+}
+
+#body {
+  background: #080B0E;
+}
+
+#tabs_frame QTabBar::tab {
+	background: #191D23;
+	border-radius: 0;
+}
+#tabs_frame QTabBar::tab:selected {
+  background: #080B0E;
+  color:#a5a59f;
+}
+
+/*Window control buttons*/
+#header #window_control_buttons QPushButton {
+  border-radius: 2px;
+  background: #21262D;	
+}
+#header #window_control_buttons QPushButton:hover {
+  background: rgb(38, 43, 50);
+}
+
+#header #window_control_buttons #restore_window {
+	border-radius: 0;
+}
+#header #window_control_buttons #minimize_window {
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+}
+#header #window_control_buttons #close_window {
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+}
+
+/* ----------- Buttons ----------- */
+#settings QPushButton, #settings QToolButton {
+  background: #21262D;
+  border: none;
+  border-radius: 2px;
+  padding: 2px;
+}
+
+#settings QPushButton:hover, #settings QToolButton:hover {
+  background: rgb(38, 43, 50);
+}
+#settings QPushButton:pressed, #settings QToolButton:pressed {
+  color: #7CE38B;
+}
+#use_app_password {
+  height: 25px;
+  width: 25px;
+}
+
+#top_left_actions QPushButton {
+  background: #21262D;
+}
+
+#top_left_actions QPushButton:hover {
+	color: #F8F8F8;
+}
+
+/* ----------- File Explorer ----------- */
+#top_nav, #left_pane {
+  background: #191D23;
+  padding: 4px;
+}
+#top_nav {
+	border-bottom: 1px solid #21262D;
+}
+#left_pane {
+  border-right: 1px solid #21262D;
+}
+#left_pane QLabel {
+	font-size: 16px;
+	font-weight: semi-bold;
+	padding-left: 1px;
+}
+#top_nav QLineEdit#nav_path {
+  background: transparent;
+  border: none;
+}
+#top_nav QLineEdit#nav_search_input {
+  background: #0d1117;
+  padding: 2px;
+  border: 1px solid #2C313C;
+  border-radius: 2px;
+  selection-background-color: #6276A4;
+}
+#actions_nav #nav_upload{
+  border-radius: 0;
+}
+#top_nav #path_nav_backward, #actions_nav #nav_new_folder {
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+#top_nav #path_nav_foreward, #actions_nav #nav_download {
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+}
+
+QTreeWidget#fm_files_list {
+  padding: 4px;
+  margin-left: 8px;
+}
+QTreeWidget#fm_files_list::item:selected, QTreeWidget#fm_files_list::item:hover {
+  background: #30426b;
+}
+
+QTreeWidget#fm_files_list QScrollBar::handle{
+  max-width: 6px;
+  border-radius: 0px;
+}
+
+#FM #path {
+  background: transparent;
+  border: none;
+  font-size: 15px;
+}
+
+QTreeWidget#fm_files_list QScrollBar{
+  background: transparent;
+  margin-top: 40px;
+  min-width: 8px;
+  padding-right: 2px;
+}
+
+QTreeWidget#fm_files_list::item {
+  background: transparent;
+}
+QListWidget#fm_files_list {
+  padding: 1px;
+}
+
+QTreeWidget#fm_files_list QHeaderView {
+  background: transparent;
+  min-height: 35px;
+  border-bottom: 1px solid #21262D;
+}
+
+QTreeWidget#fm_files_list QHeaderView::section {
+  border: none;
+}
+
+QListWidget#fm_shortcuts QScrollBar:vertical {
+  background: transparent;
+}
+
+
+/*Files List*/
+QListWidget, QTreeWidget {
+	background: transparent;
+}
+
+
+/* ----------- Home/SYS ----------- */
+
+QWidget[type="scroll_widget"], QScrollArea{
+	background: transparent;
+}
+
+QFrame[type="elevated"] {
+	background: #13181f;
+}
+
+#path_bar_w QPushButton{
+  background: transparent;
+  font-size: 13px;
+
+}
+
+#login_form {
+  border: 1px solid #21262D;
+}
+
+#login_page {
+	background: #191D23;
+}
+
+#login_msg_label {
+  color: #ff5555;
+}
+
+QMdiArea {
+	background: transparent;
+}
+
+QMdiSubWindow {
+	border-radius: 0px;
+  border: 2px solid transparent;
+}
