@@ -57,43 +57,24 @@
        <number>3</number>
       </property>
       <item>
-       <widget class="QPushButton" name="fm_backward">
+       <widget class="QLineEdit" name="fm_search_inp">
         <property name="minimumSize">
          <size>
-          <width>25</width>
+          <width>0</width>
           <height>25</height>
          </size>
         </property>
-        <property name="maximumSize">
-         <size>
-          <width>25</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="cursor">
-         <cursorShape>PointingHandCursor</cursorShape>
-        </property>
         <property name="focusPolicy">
-         <enum>Qt::FocusPolicy::NoFocus</enum>
-        </property>
-        <property name="toolTip">
-         <string>New Folder</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="path">
-        <property name="focusPolicy">
-         <enum>Qt::FocusPolicy::StrongFocus</enum>
+         <enum>Qt::FocusPolicy::ClickFocus</enum>
         </property>
         <property name="contextMenuPolicy">
          <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
         </property>
         <property name="readOnly">
-         <bool>true</bool>
+         <bool>false</bool>
+        </property>
+        <property name="placeholderText">
+         <string>search (local)</string>
         </property>
        </widget>
       </item>
@@ -202,7 +183,7 @@
          <enum>Qt::FocusPolicy::NoFocus</enum>
         </property>
         <property name="toolTip">
-         <string>New File</string>
+         <string>Cut</string>
         </property>
         <property name="text">
          <string/>
@@ -295,6 +276,72 @@
       </item>
      </layout>
     </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="spacing">
+      <number>2</number>
+     </property>
+     <property name="leftMargin">
+      <number>3</number>
+     </property>
+     <property name="topMargin">
+      <number>3</number>
+     </property>
+     <property name="rightMargin">
+      <number>3</number>
+     </property>
+     <property name="bottomMargin">
+      <number>3</number>
+     </property>
+     <item>
+      <widget class="QPushButton" name="fm_backward">
+       <property name="minimumSize">
+        <size>
+         <width>25</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>25</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::FocusPolicy::NoFocus</enum>
+       </property>
+       <property name="toolTip">
+        <string>New Folder</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="path">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::FocusPolicy::NoFocus</enum>
+       </property>
+       <property name="contextMenuPolicy">
+        <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
     <widget class="QTreeWidget" name="fm_files_list">

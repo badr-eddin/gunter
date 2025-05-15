@@ -112,6 +112,14 @@ std::string runner::run_command(std::string command, picojson::object args) {
         } 
         return com::make_response("error", "missing arguemnts 'key'!");
     }
+
+    else if (command == READ_AENV) {
+        return gsystem::control::read_all_env();
+    }
+
+    else if (command == DUMP_CB) {
+        return gsystem::control::dump_clipboard();
+    }
     
     else {
         return com::make_response("error", "command not recognized!");

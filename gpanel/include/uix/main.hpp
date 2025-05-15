@@ -1,6 +1,8 @@
 #pragma once
 #include <QWidget>
 #include <QTabBar>
+#include <QMetaType>
+#include <QObject>
 #include <QTimer>
 #include <Qt>
 
@@ -12,20 +14,14 @@
 
 
 namespace gpanel {
-    class  GMainWindow : public QWidget, public EventListener {
-        public:
-            GMainWindow();
-            ~GMainWindow();
-
-            void new_tab(QWidget*, const std::string);
-
-            void on_error_to_connect(const std::string);
-            void on_connected(QWidget*tab, const std::string title, const std::string uid);
+    class  GMainWindow : public QWidget {
+        Q_OBJECT
 
         private:
             picojson::array current_clients;
             server_creds_t server_creds;
             unsigned short home_index = 0;
+
             std::list<std::string> connected_uids;
 
             Ui::MainWindow *ui;
@@ -44,9 +40,19 @@ namespace gpanel {
             void setup_signals();
 
             void tab_bar_clicked(unsigned short);
+            void error_to_connect(QString);
+            void connected(QWidget*tab, QString title, QString uid);
 
             void mw_exit();
             void mw_minimize();
             void mw_restore();
+    
+        public:
+            GMainWindow();
+            ~GMainWindow();
+
+            unsigned char new_tab(QWidget*, QString);
+            void remove_tab(unsigned char);
+
     };
 }

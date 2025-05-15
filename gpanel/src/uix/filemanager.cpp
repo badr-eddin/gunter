@@ -1,18 +1,13 @@
 #include "uix/filemanager.hpp"
 
 
-gpanel::FileManager::FileManager(QWidget *parent, gpanel::exeq_sign_t exeq_cb) : TabWindow(parent, exeq_cb), ui(new Ui::FM) {    
-    QWidget *widget = new QWidget();
-    this->ui->setupUi(widget);
-    this->setWidget(widget);
-    this->resize(500, 300);
-    this->setWindowTitle("File Explorer");
-    
-    this->list_files();
-    
+gpanel::FileManager::FileManager(QWidget *parent) : TabWindow(parent), ui(new Ui::FM), inp_dialog(new InputDialog(this)) {
+    this->setup<Ui::FM>(this->ui, "File Explorer");
+    this->inp_dialog->close();
+        
     connect(
         this->ui->fm_refresh, &QPushButton::clicked,
-        this, &gpanel::FileManager::list_files
+        this, &gpanel::FileManager::refresh
     );
 
     connect(
@@ -25,6 +20,16 @@ gpanel::FileManager::FileManager(QWidget *parent, gpanel::exeq_sign_t exeq_cb) :
         this, &gpanel::FileManager::path_backward
     );
 
+    connect(
+        this->ui->fm_new_file, &QPushButton::clicked,
+        this, &gpanel::FileManager::fm_new_file
+    );
+
+    connect(
+        this->ui->fm_new_folder, &QPushButton::clicked,
+        this, &gpanel::FileManager::fm_new_folder
+    );
+
     this->ui->fm_copy->setIcon(uiutils::get_icon("fileman/copy.svg"));
     this->ui->fm_cut->setIcon(uiutils::get_icon("fileman/cut.svg"));
     this->ui->fm_paste->setIcon(uiutils::get_icon("fileman/paste.svg"));
@@ -33,6 +38,8 @@ gpanel::FileManager::FileManager(QWidget *parent, gpanel::exeq_sign_t exeq_cb) :
     this->ui->fm_new_folder->setIcon(uiutils::get_icon("fileman/new-folder.svg"));
     this->ui->fm_refresh->setIcon(uiutils::get_icon("fileman/refresh.svg"));
     this->ui->fm_backward->setIcon(uiutils::get_icon("fileman/go-backward.svg"));
+
+    this->list_files();
 }
 
 
@@ -72,9 +79,19 @@ void gpanel::FileManager::nav_to_path(std::string path) {
     message_t msg;
 
     msg.set_command(LS);
-    msg["path"] = picojson::value(path);
+    msg["path"] = msg.value(path);
 
-    this->exeq(msg.dump(), [this](const std::string response){ this->populate(response); });
+    emit this->api_exeq(
+        QString::fromStdString(msg.dump()), 
+        [this](response_t response){ 
+            if (!response.log_level()) {
+                this->populate(response.as<picojson::array>()); 
+            }
+            else {
+                logging::log_print(response.as<std::string>(), response.log_level());
+            }
+        }
+    );
 
 }
 
@@ -109,21 +126,9 @@ gpanel::FileManager::read_by_header(picojson::array item, const std::string head
 
 }
 
-void gpanel::FileManager::populate(const std::string list_str) {
+void gpanel::FileManager::populate(picojson::array files) {
     this->ui->fm_files_list->clear();
     this->files_map.clear();
-
-    picojson::object response_js = parse_json(list_str);
-
-    if (response_js.empty())
-        return;
-
-    if (!response_js["msg"].is<std::string>()) {
-        // TODO: log
-        return;
-    }
-
-    picojson::array files = parse_json<picojson::array>(response_js["msg"].get<std::string>()); 
 
     if (files.empty()) {
         return;
@@ -154,10 +159,12 @@ void gpanel::FileManager::populate(const std::string list_str) {
         name = QString::fromStdString(this->read_by_header<std::string>(file, "name"));
 
         item->setText(0, name);
-        item->setText(1, QString::fromStdString(this->read_by_header<std::string>(file, "size")));
+        bool isfolder = this->read_by_header<std::string>(file, "type") == "folder";
+        std::string ss = isfolder ? "-" : std::to_string((unsigned int)this->read_by_header<double>(file, "size")) + "B";
+        item->setText(1, QString::fromStdString(ss));
         item->setText(2, QString::fromStdString(this->read_by_header<std::string>(file, "modified")));
 
-        if (this->read_by_header<std::string>(file, "type") == "folder")
+        if (isfolder)
             item->setIcon(0, uiutils::get_icon("fileman/folder.svg"));
         else
             item->setIcon(0, uiutils::get_icon("fileman/file.svg"));
@@ -174,22 +181,61 @@ void gpanel::FileManager::list_files() {
     // get current path
     msg.set_command(PWD);
 
-    this->exeq(msg.dump(), [this](const std::string response){ 
-        picojson::object response_js = parse_json(response);
-
-        if (response_js.empty())
-            // TODO: log: unable to get valid path
-            return;
-
-        // check if path exist
-        if (!response_js["msg"].is<std::string>()) {
+    emit this->api_exeq(QString::fromStdString(msg.dump()), [this](response_t response){
+        if (response.empty()) {
+            logging::log_print("invalid response!", 2);
             return;
         }
 
-        const std::string path = response_js["msg"].get<std::string>();
+        if (response.log_level()) {
+            logging::log_print(response.as<std::string>(), response.log_level());
+            return;
+        }
+
+        // check if path exist
+        const std::string path = response.as<std::string>();
+
+        if (path.empty()) {
+            logging::log_print("unable to get valid path!", 2);
+            return;
+        }
 
         this->nav_to_path(path); 
     });
+}
+
+void gpanel::FileManager::refresh() {
+    std::string current_gui_path = this->ui->path->text().toStdString();
+
+    if (!current_gui_path.empty()) {
+        this->nav_to_path(current_gui_path);
+    } else {
+        this->list_files();
+    }
+}
+
+void gpanel::FileManager::fm_new_folder() {
+    this->fm_new(MKDIR);
+}
+
+void gpanel::FileManager::fm_new_file() {
+    this->fm_new(MKFILE);
+}
+
+void gpanel::FileManager::fm_new(const std::string method) {
+    auto on_enter = [this, method](std::string fname) {
+        gpanel::message_t msg;
+        msg.set_command(method);
+        msg["name"] = msg.value(fname);
+
+        emit this->api_exeq(QString::fromStdString(msg.dump()), [this](response_t response) {
+            logging::log_print(response.as<std::string>(), response.log_level());
+            this->refresh();
+        });
+    };
+    
+    this->inp_dialog->connect(this->inp_dialog, &InputDialog::on_success, on_enter);
+    this->inp_dialog->request_input(qobject_cast<QPushButton*>(sender())->pos(), "name");
 }
 
 

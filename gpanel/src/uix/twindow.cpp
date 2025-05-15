@@ -1,16 +1,17 @@
 #include "uix/twindow.hpp"
 
 
-gpanel::TabWindow::TabWindow(QWidget*parent, gpanel::exeq_sign_t exqcb) : QMdiSubWindow(parent) {
-    this->exeq = exqcb;
-    
+gpanel::TabWindow::TabWindow(QWidget*parent) : QMdiSubWindow(parent) {    
     setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowCloseButtonHint);
     setAttribute(Qt::WA_TranslucentBackground);
     setContextMenuPolicy(Qt::NoContextMenu);
 }
 
-gpanel::TabWindow::~TabWindow() {
-    // TODO: log when a window closed
+gpanel::TabWindow::~TabWindow() {}
+
+void gpanel::TabWindow::closeEvent(QCloseEvent*event) {
+    emit this->close_requested();
+    QMdiSubWindow::closeEvent(event);
 }
 
 void gpanel::TabWindow::paintEvent(QPaintEvent*event) {

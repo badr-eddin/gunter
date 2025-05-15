@@ -76,14 +76,19 @@ QTreeWidget::item:selected {
 }
 QScrollBar:vertical {
   border: none;
-  background: #161B22;
+  background: transparent;
   width: 13px;
-  padding: 4px;
+  padding: 2px;
+  padding-left: 4px;
+  padding-top: 30px;
 }
 QScrollBar::handle:vertical {
   background: #21262D;
   border-radius: 2px;
-  height: 20px;
+  min-height: 20px;
+  padding-left: 2px;
+  min-width: 6px;
+  max-width: 6px;
 }
 QScrollBar::handle:vertical:hover {
   background: rgb(38, 43, 50);
@@ -151,9 +156,11 @@ QTabBar::tab:selected {
     background: #161B22;
 	color: #a5a59f;
 }
-
 QTabBar::tab:selected:hover {
     background: #1A2027;
+}
+QTextBrowser {
+  background: transparent;
 }
 /* ----------- Main Window ----------- */
 #tab_navigation, #bottom_sts {
@@ -271,22 +278,10 @@ QTreeWidget#fm_files_list::item:selected, QTreeWidget#fm_files_list::item:hover 
   background: #30426b;
 }
 
-QTreeWidget#fm_files_list QScrollBar::handle{
-  max-width: 6px;
-  border-radius: 0px;
-}
-
 #FM #path {
   background: transparent;
   border: none;
   font-size: 15px;
-}
-
-QTreeWidget#fm_files_list QScrollBar{
-  background: transparent;
-  margin-top: 40px;
-  min-width: 8px;
-  padding-right: 2px;
 }
 
 QTreeWidget#fm_files_list::item {
@@ -306,12 +301,6 @@ QTreeWidget#fm_files_list QHeaderView::section {
   border: none;
 }
 
-QListWidget#fm_shortcuts QScrollBar:vertical {
-  background: transparent;
-}
-
-
-/*Files List*/
 QListWidget, QTreeWidget {
 	background: transparent;
 }
@@ -352,4 +341,47 @@ QMdiArea {
 QMdiSubWindow {
 	border-radius: 0px;
   border: 2px solid transparent;
+}
+
+#tab_tools {
+  background: #21262D;
+  padding: 2px;
+  border-radius: 2px;
+}
+
+#tab_tools QPushButton {
+  background: transparent;
+  padding: 2px 6px;
+  border: none;
+  border-radius: 2px;
+}
+
+#tab_tools QPushButton:hover {
+  background: #262b32;
+}
+
+#tab_tools QPushButton:pressed {
+  color: #F8F8F8;
+}
+
+/*
+#tab_tools #win_file_exp {
+  background: #0d1117;
+}*/
+
+#TPanel {
+	background: #13181f;
+  border-radius: 4px;
+}
+
+#TPanel QLabel {
+  background: #30426b;
+  border-radius: 10px;
+  padding: 0 2px;
+}
+
+#Tracer QScrollBar {
+  background: #191D23;
+  padding: 2px;
+  margin-left: 1px;
 }

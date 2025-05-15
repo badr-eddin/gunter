@@ -6,21 +6,32 @@
 #include <QColor>
 
 #include "defcmd.hpp"
-
 #include "utils/ui.hpp"
+#include "core/client_api.hpp"
 #include "utils/message.hpp"
 
 namespace gpanel {
-    using exeq_sign_t = std::function<void(const std::string, std::function<void(const std::string)>)>;
-
     class TabWindow : public QMdiSubWindow {
-        public:
-        gpanel::exeq_sign_t exeq;
+        Q_OBJECT
 
-            TabWindow(QWidget*, gpanel::exeq_sign_t);
+        public:
+            TabWindow(QWidget*);
             ~TabWindow();
+
+            template<typename T> void setup(T*ui, const QString title) {
+                QWidget *widget = new QWidget();
+                ui->setupUi(widget);
+                this->setWidget(widget);
+                this->setWindowTitle(title);
+                this->resize(500, 300);
+            };
+
+        signals:
+            void close_requested();
+            void api_exeq(const QString, exeq_callback_t);
         
         private:
             void paintEvent(QPaintEvent*) override;
+            void closeEvent(QCloseEvent*) override;
     };
 }

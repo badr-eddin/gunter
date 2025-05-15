@@ -1,19 +1,27 @@
 #include "core/client_api.hpp"
 
 
-gpanel::API::API(server_creds_t *creds, const std::string uid) 
-    : QObject(nullptr), io_context(new asio::io_context()), connection(new tcp::socket(*io_context)), work_guard(asio::make_work_guard(*io_context)) {
+gpanel::API::API(QObject*parent) 
+    : io_context(new asio::io_context()), 
+        connection(new tcp::socket(*io_context)), 
+        work_guard(asio::make_work_guard(*io_context)),
+        QObject(parent) {
+            
+    this->thread_context = new ASIOThread(this->io_context, nullptr);
+}
+
+void gpanel::API::init(QWidget*parent, server_creds_t *creds, const std::string uid) {
     this->creds = creds;
     this->uid = uid;
-
-    this->thread_context = new ASIOThread(this->io_context, nullptr);
+    this->parent_w = parent;
 }
 
 gpanel::API::~API() {
     this->io_context->stop();
     this->thread_context->quit();
     this->thread_context->wait();
-    // TODO: log on delete
+    this->connection->close();
+    logging::log_print("connection '" + this->uid + "' terminated!");
 }
 
 
@@ -32,7 +40,7 @@ void gpanel::API::connect2() {
     );
 
     if(err_code) {
-        this->listener->on_error_to_connect(err_code.message());
+        emit this->error_to_connect(QString::fromStdString(err_code.message()));
     }
 
     // try to connect to server
@@ -55,10 +63,11 @@ void gpanel::API::connect2() {
                 asio::async_write(*(this->connection), asio::buffer(raw_request), 
                     [this](const asio::error_code &ec, std::size_t) {
                         // if no error and the connection still open, means connection made
-                        this->connected = !ec || this->connection->is_open();
+                        this->__connected = !ec || this->connection->is_open();
             
-                        if (ec)
-                            this->listener->on_error_to_connect(ec.message());
+                        if (ec) {
+                            emit this->error_to_connect(QString::fromStdString(ec.message()));
+                        }
                         else {
                             std::string title = this->uid;
                             picojson::object cl = this->get_client();
@@ -70,15 +79,19 @@ void gpanel::API::connect2() {
                                     title += "@" + cl["tag"].get<std::string>();
                                 }
                             }
-
-                            this->listener->on_connected(this->get_widget(), title, this->uid);
+                            logging::log_print("connected to '" + this->uid + "'");
+                            
+                            emit this->connected(
+                                this->parent_w, QString::fromStdString(title), 
+                                QString::fromStdString(this->uid)
+                            );
                         }
                     }
                 );
             } 
             else {
-                this->connected = false;
-                this->listener->on_error_to_connect(ec.message());
+                this->__connected = false;
+                emit this->error_to_connect(QString::fromStdString(ec.message()));
             }
         }
     );
@@ -87,26 +100,41 @@ void gpanel::API::connect2() {
     this->thread_context->start();    
 }
 
-void gpanel::API::exeq(const std::string msg, std::function<void(const std::string)> callback) {
-    if (this->connected) {
+void gpanel::API::handle_error(const asio::error_code&ec, exeq_callback_t callback) {
+    callback(
+        response_t("{\"msg\": \"" + ec.message() + "\", \"type\": \"error\"}")
+    );
+
+    // if an error occured, update 'connected' flag
+    this->__connected = ec != asio::error::eof && ec != asio::error::broken_pipe && this->connection->is_open();
+}
+
+void gpanel::API::exeq(const std::string msg, const exeq_callback_t& callback) {
+    if (this->__connected) {
         this->messages.push(std::pair(msg, callback));
 
         // start if not started executed 
         if (!this->started) {
             this->start();
         }
+    } else {
+        logging::log_print("attempt to send commands, but not connected", 1);
+        emit this->disconnected();
     }
 
-    // TODO: log(try to send messages, but not connected)
 }
 
 void gpanel::API::start() {
-    logging::log_print("executing ...");
-
     // if empty or not connected then abort
-    if (this->messages.empty() || !this->connected) {
+    if (!this->__connected) {
+        logging::log_print("not connected!", 2);
         this->started = false;
-        if (!this->connected) logging::log_print("not connected!", 2);
+        emit this->disconnected();
+        return;
+    }
+
+    if (this->messages.empty()) {
+        this->started = false;
         return;
     }
 
@@ -128,47 +156,45 @@ void gpanel::API::start() {
     std::string msg = next_ptr->first + Codes::MESSAGE_TERMINATOR;
 
     asio::async_write(*(this->connection), asio::buffer(msg), [this, next_ptr](const asio::error_code &ec, size_t sent) {
-        // TODO: log(bytes sent)
-        if (!ec) {            
-            // read response
-            logging::log_print("command sent!");
+        if (!ec) {
+            // keep track of sent bytes 
+            this->total_bytes_sent += sent;
 
+            // read response
             auto buffer = std::make_shared<asio::streambuf>();
 
             asio::async_read_until(*(this->connection), *buffer, Codes::MESSAGE_TERMINATOR, 
-                [buffer, next_ptr, this](const asio::error_code& ec, std::size_t){
+                [buffer, next_ptr, this](const asio::error_code& ec, std::size_t rcvd){
                     if (!ec) {
+                        // keep track of received bytes
+                        this->total_bytes_received += rcvd;
+
                         std::istream is(buffer.get());
                         std::string response;
                         std::getline(is, response, Codes::MESSAGE_TERMINATOR);
-                        next_ptr->second(response);
+                        next_ptr->second(response_t(response));
                     } 
                     else {
-                        next_ptr->second("");
+                        this->handle_error(ec, next_ptr->second);
                     }
             
                     this->start();
                 }
         );
 
-        } else {
-            logging::log_print("error to sent command!");
-            
-            // next.second("");
-
-            // if couldn't send start again, otherwise the recv will recusre
-            this->start();
+        } else {            
+            this->handle_error(ec, next_ptr->second);
         }
+
+        // if couldn't send start again, otherwise the recv will recusre
+        this->start();
     });
 }
 
 
-unsigned short gpanel::API::count() {
-    return this->messages.size();
-}
-
-
-void gpanel::API::set_listener(EventListener *l) { this->listener = l; }
+unsigned short gpanel::API::count() { return this->messages.size(); }
+size_t gpanel::API::bsent() { return this->total_bytes_sent; }
+size_t gpanel::API::breceived() { return this->total_bytes_received; }
 
 void gpanel::API::set_client(picojson::object cl) { this->client = cl; }
 
@@ -181,13 +207,4 @@ gpanel::ASIOThread::ASIOThread(asio::io_context* ctx, QObject* parent = nullptr)
 
 void gpanel::ASIOThread::run()  {
     io_context->run();
-}
-
-
-gpanel::EventListener::EventListener() {
-    // TODO: log on init
-}
-
-gpanel::EventListener::~EventListener() { 
-    // TODO: log on delete
 }

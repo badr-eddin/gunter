@@ -1,12 +1,15 @@
 #include "uix/main.hpp"
 
-
-gpanel::GMainWindow::GMainWindow() : QWidget(nullptr), ui(new Ui::MainWindow), gpanel::EventListener() {
+gpanel::GMainWindow::GMainWindow() : QWidget(nullptr), ui(new Ui::MainWindow) {
     this->setup_main_window();
     this->setup_tab_bar();
     
     this->setup_signals();
     this->setup_icons();
+
+
+    // in order to use exeq_callback_t in signals/slots it must be register by qt
+    qRegisterMetaType<gpanel::exeq_callback_t>("exeq_callback_t");
 }
 
 gpanel::GMainWindow::~GMainWindow() {
@@ -93,12 +96,24 @@ void gpanel::GMainWindow::tab_bar_clicked(unsigned short index) {
     this->ui->tabs->setCurrentIndex(index);
 }
 
-void gpanel::GMainWindow::new_tab(QWidget*widget, const std::string title) {
-    std::cout << "added\n";
+unsigned char gpanel::GMainWindow::new_tab(QWidget*widget, QString title) {
     this->ui->tabs->addWidget(widget);
-    unsigned short index = this->tabbar->addTab(QString(title.c_str()));
+    unsigned char index = this->tabbar->addTab(title);
     this->tabbar->setCurrentIndex(index);
     this->ui->tabs->setCurrentIndex(index);
+    return index;
+}
+
+void gpanel::GMainWindow::remove_tab(unsigned char index) {
+    if (index > 0) {
+        QWidget *widget = this->ui->tabs->widget(index);
+        this->ui->tabs->removeWidget(widget);
+        this->tabbar->removeTab(index);
+        if (widget) delete widget;
+        // navigate to home
+        this->ui->tabs->setCurrentIndex(0);
+        this->tabbar->setCurrentIndex(0);
+    }
 }
 
 void gpanel::GMainWindow::populate() {

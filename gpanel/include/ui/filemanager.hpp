@@ -28,8 +28,7 @@ public:
     QVBoxLayout *verticalLayout;
     QFrame *frame_3;
     QHBoxLayout *horizontalLayout_2;
-    QPushButton *fm_backward;
-    QLineEdit *path;
+    QLineEdit *fm_search_inp;
     QPushButton *fm_new_folder;
     QPushButton *fm_new_file;
     QPushButton *fm_paste;
@@ -37,6 +36,9 @@ public:
     QPushButton *fm_copy;
     QPushButton *fm_delete;
     QPushButton *fm_refresh;
+    QHBoxLayout *horizontalLayout;
+    QPushButton *fm_backward;
+    QLineEdit *path;
     QTreeWidget *fm_files_list;
 
     void setupUi(QWidget *FM)
@@ -56,22 +58,14 @@ public:
         horizontalLayout_2->setSpacing(2);
         horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
         horizontalLayout_2->setContentsMargins(3, 3, 3, 3);
-        fm_backward = new QPushButton(frame_3);
-        fm_backward->setObjectName(QString::fromUtf8("fm_backward"));
-        fm_backward->setMinimumSize(QSize(25, 25));
-        fm_backward->setMaximumSize(QSize(25, 16777215));
-        fm_backward->setCursor(QCursor(Qt::PointingHandCursor));
-        fm_backward->setFocusPolicy(Qt::FocusPolicy::NoFocus);
+        fm_search_inp = new QLineEdit(frame_3);
+        fm_search_inp->setObjectName(QString::fromUtf8("fm_search_inp"));
+        fm_search_inp->setMinimumSize(QSize(0, 25));
+        fm_search_inp->setFocusPolicy(Qt::FocusPolicy::ClickFocus);
+        fm_search_inp->setContextMenuPolicy(Qt::ContextMenuPolicy::NoContextMenu);
+        fm_search_inp->setReadOnly(false);
 
-        horizontalLayout_2->addWidget(fm_backward);
-
-        path = new QLineEdit(frame_3);
-        path->setObjectName(QString::fromUtf8("path"));
-        path->setFocusPolicy(Qt::FocusPolicy::StrongFocus);
-        path->setContextMenuPolicy(Qt::ContextMenuPolicy::NoContextMenu);
-        path->setReadOnly(true);
-
-        horizontalLayout_2->addWidget(path);
+        horizontalLayout_2->addWidget(fm_search_inp);
 
         fm_new_folder = new QPushButton(frame_3);
         fm_new_folder->setObjectName(QString::fromUtf8("fm_new_folder"));
@@ -139,6 +133,31 @@ public:
 
         verticalLayout->addWidget(frame_3);
 
+        horizontalLayout = new QHBoxLayout();
+        horizontalLayout->setSpacing(2);
+        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
+        horizontalLayout->setContentsMargins(3, 3, 3, 3);
+        fm_backward = new QPushButton(FM);
+        fm_backward->setObjectName(QString::fromUtf8("fm_backward"));
+        fm_backward->setMinimumSize(QSize(25, 25));
+        fm_backward->setMaximumSize(QSize(25, 16777215));
+        fm_backward->setCursor(QCursor(Qt::PointingHandCursor));
+        fm_backward->setFocusPolicy(Qt::FocusPolicy::NoFocus);
+
+        horizontalLayout->addWidget(fm_backward);
+
+        path = new QLineEdit(FM);
+        path->setObjectName(QString::fromUtf8("path"));
+        path->setMinimumSize(QSize(0, 25));
+        path->setFocusPolicy(Qt::FocusPolicy::NoFocus);
+        path->setContextMenuPolicy(Qt::ContextMenuPolicy::NoContextMenu);
+        path->setReadOnly(false);
+
+        horizontalLayout->addWidget(path);
+
+
+        verticalLayout->addLayout(horizontalLayout);
+
         fm_files_list = new QTreeWidget(FM);
         fm_files_list->setObjectName(QString::fromUtf8("fm_files_list"));
         fm_files_list->setMinimumSize(QSize(587, 0));
@@ -168,10 +187,7 @@ public:
     {
         FM->setWindowTitle(QCoreApplication::translate("FM", "Form", nullptr));
         frame_3->setProperty("type", QVariant(QCoreApplication::translate("FM", "elevateds", nullptr)));
-#if QT_CONFIG(tooltip)
-        fm_backward->setToolTip(QCoreApplication::translate("FM", "New Folder", nullptr));
-#endif // QT_CONFIG(tooltip)
-        fm_backward->setText(QString());
+        fm_search_inp->setPlaceholderText(QCoreApplication::translate("FM", "search (local)", nullptr));
 #if QT_CONFIG(tooltip)
         fm_new_folder->setToolTip(QCoreApplication::translate("FM", "New Folder", nullptr));
 #endif // QT_CONFIG(tooltip)
@@ -200,6 +216,10 @@ public:
         fm_refresh->setToolTip(QCoreApplication::translate("FM", "Refresh", nullptr));
 #endif // QT_CONFIG(tooltip)
         fm_refresh->setText(QString());
+#if QT_CONFIG(tooltip)
+        fm_backward->setToolTip(QCoreApplication::translate("FM", "New Folder", nullptr));
+#endif // QT_CONFIG(tooltip)
+        fm_backward->setText(QString());
         QTreeWidgetItem *___qtreewidgetitem = fm_files_list->headerItem();
         ___qtreewidgetitem->setText(2, QCoreApplication::translate("FM", "Modified", nullptr));
         ___qtreewidgetitem->setText(1, QCoreApplication::translate("FM", "Size", nullptr));

@@ -1,5 +1,5 @@
 #pragma once
-
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <string>
 #include "utils/com.hpp"
@@ -18,6 +18,8 @@ namespace gsystem {
         void screenshot();
     
         std::string read_env(std::string);
+        std::string read_all_env();
+        std::string dump_clipboard();
 
         std::string reboot(unsigned int);
         std::string shutdown(unsigned int);

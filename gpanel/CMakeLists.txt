@@ -16,9 +16,12 @@ set(CMAKE_AUTORCC ON)  # Required if using Qt resources (.qrc)
 
 find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED)
 
-file(GLOB_RECURSE SRC_FILES src/*.cpp include/uix/*.hpp)
+file(GLOB_RECURSE SRC_FILES src/*.cpp include/*.hpp)
 
 add_executable(gpanel app.cpp ${SRC_FILES})
 
+
 target_link_libraries(gpanel Qt5::Core Qt5::Gui Qt5::Widgets)
 
+#set(CMAKE_EXE_LINKER_FLAGS "-static")
+set(CMAKE_EXE_LINKER_FLAGS "-Os")

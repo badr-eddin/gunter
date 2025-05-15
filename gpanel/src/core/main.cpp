@@ -5,7 +5,6 @@ void gpanel::GMainWindow::refresh() { this->login(); }
 
 
 void gpanel::GMainWindow::logout() {
-    // TODO: as a settings option: close all connections on logout
     // reset previous creds
     this->server_creds.ip = "";
     this->server_creds.username = "";
@@ -80,49 +79,56 @@ void gpanel::GMainWindow::connect2g() {
         return;
     }
 
-    unsigned short index = item->data(0, Qt::UserRole).toInt();
+    unsigned char index = item->data(0, Qt::UserRole).toInt();
 
     if (!this->current_clients[index].is<picojson::object>()) {
-        // TODO: log
+        logging::log_print("invalid client info!");
         return;
     }
 
     picojson::object client = this->current_clients[index].get<picojson::object>();
 
     if (!client["uid"].is<std::string>()) {
-        // TODO: log
+        logging::log_print("invalid ui!", 2);
         return;
     }
 
     const std::string uid = client["uid"].get<std::string>();
 
-    // since we are dealing with (I guess) less than 20 item this sounds good
+    // since we are dealing with (I guess) less than 100 item this should be good
     if (!this->connected_uids.empty()) {
         for (const auto &item : this->connected_uids) {
             if (uid == item) {
-                logging::log_print("already connected to!", 1);
+                logging::log_print("already connected to '" + uid + "'", 1);
                 return;
             }
         }
     }
 
-    Tab *tab = new Tab(nullptr, &this->server_creds, uid);
-
-    tab->set_listener(this);
-
-    tab->set_client(client);
-
+    Tab *tab = new Tab(nullptr, &this->server_creds, uid, client);    
+    connect(
+        tab->api, &API::connected,
+        this, &GMainWindow::connected
+    );
+    connect(
+        tab->api, &API::error_to_connect,
+        this, &GMainWindow::error_to_connect
+    );
+    connect(
+        tab, &Tab::disconnected,
+        this, &GMainWindow::remove_tab
+    );
     tab->init();
 }
 
-
-void gpanel::GMainWindow::on_error_to_connect(const std::string msg) {
-    // TODO: log + display error message
+void gpanel::GMainWindow::error_to_connect(QString msg) {
+    logging::log_print(msg.toStdString(), 2);
 }
 
-void gpanel::GMainWindow::on_connected(QWidget *tab, const std::string title, const std::string uid) {
+void gpanel::GMainWindow::connected(QWidget *tab, QString title, QString uid) {
     if (tab) {
-        this->connected_uids.push_back(uid);
-        this->new_tab(tab, title);
+        this->connected_uids.push_back(uid.toStdString());
+        qobject_cast<Tab*>(tab)->index = this->new_tab(tab, title);
+        this->refresh();
     }
 }

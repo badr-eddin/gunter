@@ -4,17 +4,17 @@
 #define __G_VERSION "0.0.1"
 
 int main(int argc, char* argv[]) {
-    if (argc < 3) {
+    if (argc < 4) {
         std::cerr << "Usage: " << argv[0] << " <IP> <PORT>" << std::endl;
         return 1;
     }
 
-    std::string ip = argv[1];
-    int port = std::stoi(argv[2]);
+    std::string ip(argv[1]);
+    unsigned int port = std::stoi(argv[2]);
 
     credentials_t creds({
         ip,
-        "gunter",
+        argv[3],
         "xp",
         port,
         10

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.28)
 
-project(xserver)
+project(gserver)
 
 find_package(OpenSSL REQUIRED)
 
@@ -10,6 +10,6 @@ include_directories(../common)
 
 file(GLOB_RECURSE SRC_FILES src/*.cpp)
 
-add_executable(xserver main.cpp ${SRC_FILES})
+add_executable(gserver main.cpp ${SRC_FILES})
 
-target_link_libraries(xserver OpenSSL::SSL OpenSSL::Crypto)
+target_link_libraries(gserver OpenSSL::SSL OpenSSL::Crypto)

@@ -3,7 +3,7 @@
 if [ "$1" == "static" ]
 then
 echo "building static exe **********************************"
-wine g++ main.cpp $(find src -name "*.cpp") -I./include -I../common -lkernel32 -lbcrypt -ladvapi32 -lws2_32 -static  -o bin/gunters
+wine g++ main.cpp $(find src -name "*.cpp") -I./include -I../common -lkernel32 -lbcrypt -ladvapi32 -lws2_32 -static -Os -o bin/gunters
 
 if [ "$2" == "run" ]
 then
@@ -32,6 +32,6 @@ fi
 
 else
 echo "building dynamic exe **********************************"
-wine g++ main.cpp $(find src -name "*.cpp") -I./include -I../common -lkernel32 -lbcrypt -ladvapi32 -lws2_32 -static -o bin/gunterd
+wine g++ main.cpp $(find src -name "*.cpp") -I./include -I../common -lkernel32 -lbcrypt -ladvapi32 -lws2_32 -Os -o bin/gunterd
 fi
 
